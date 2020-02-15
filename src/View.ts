@@ -12,7 +12,7 @@ export default class View {
   _formatVariable = (variable : any) => {
 
     // TODO: Parse python var into js
-    return {
+    return JSON.parse(variable); /*{
       data: 10,
       a: {
           text: "haha"
@@ -23,7 +23,7 @@ export default class View {
       c: {
           text: "ligma"
       }
-    };
+    }; */
   };
 
   handleNewVariable = (variable : any) => {

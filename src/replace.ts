@@ -1,4 +1,4 @@
-function replace(target: string, obj:any){
+export function replace(target: string, obj:any){
     target = target.substr(target.indexOf('{'));
     let name:string = obj.name;
     let value:string = obj.value;
@@ -9,7 +9,7 @@ function replace(target: string, obj:any){
     let newstr:string = target.substr(0, start) + value + target.substr(end);
     return newstr;
 }
-function addQuotes(target: string){
+export function addQuotes(target: string){
     let spaces:RegExp = / /g;
     let re1:RegExp = /{|{ /g;
     let re2:RegExp = /:|: /g;
@@ -17,7 +17,7 @@ function addQuotes(target: string){
     return target.replace(spaces, '').replace(re1, '{"').replace(re2, '":').replace(re3, ',"');
 }
 
-let a:string = 'BinaryTree { root:Node }';
+/* let a:string = 'BinaryTree { root:Node }';
 let b:any = {
     name: 'root',
     value: 'Node { left: 1, right: 2}'
@@ -26,4 +26,4 @@ let b:any = {
 let c:string = addQuotes(replace(a, b));
 console.log(c);
 let d:any = JSON.parse(c);
-console.log(d);
+console.log(d); */

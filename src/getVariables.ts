@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { replace, addQuotes } from './replace';
 
 export default async function getVariables(varName: string) {
 
@@ -24,7 +25,7 @@ export default async function getVariables(varName: string) {
 
 	const variable = await parseVariable(session, "", response2.variables[0]);
 
-	return variable;
+	return addQuotes(variable);
 }
 
 async function parseVariable(session: vscode.DebugSession, string : string, response : any) {
@@ -33,10 +34,9 @@ async function parseVariable(session: vscode.DebugSession, string : string, resp
 		return string;
 	}
 
-	//modify string to incorporate info from current object
-
-	string += response.value;
-
+	if (string != "") {
+		string = replace(string, response);
+	}
 
 	const response1 = await session.customRequest('variables', { variablesReference: response.variablesReference}); 
 
