@@ -19,7 +19,7 @@ export default class View {
     let panel = this.getWebViewPanel(varName);
 
     const varToRender = this._formatVariable(variable);
-    const html = getHTML(varToRender);
+    const html = getHTML(varName, varToRender);
     
     panel.webview.html = html;
 

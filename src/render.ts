@@ -8,10 +8,13 @@ let warnings:string = '';
 
 const center:number = 200;
 
-export default function getHTML(obj: any){
+let vname = '';
+
+export default function getHTML(varName: string, obj: any){
     lines = '';
     whites = '';
     shapes = '';
+    vname = varName;
     text = 'cx.fillStyle=\"Blue\";';
     warnings = '';
     var html = '<html><body>';
@@ -20,7 +23,7 @@ export default function getHTML(obj: any){
         if(Object.entries(obj).length == 0){
             warnings += "This object is empty.";
         }else{
-            render(obj, "Current", center, 100);
+            render(obj, varName, center, 100);
         }
     }else{
         warnings += "This is not an object.";
@@ -38,7 +41,7 @@ export default function getHTML(obj: any){
 }
 
 function renderArray(arr: Array<any>, name: string, x: number, y: number){
-    text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Comic Sans MS\";';
+    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Consolas\";';
     var arrSize = 5;
     for(let elem of arr){
         text += 'cx.fillText(\"' + elem + '\", ' + (x+7) + ', ' + (y + arrSize+13) + ');';
@@ -50,7 +53,7 @@ function renderArray(arr: Array<any>, name: string, x: number, y: number){
  
 function render(obj: any, name: string, x: number, y: number){
     if(Array.isArray(obj)) {return renderArray(obj, name, x, y);}
-    text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Comic Sans MS\";';
+    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Consolas\";';
     var boxSize = 40;
     const keys = Object.keys(obj);
     var objectFields = [];
@@ -91,12 +94,12 @@ function render(obj: any, name: string, x: number, y: number){
         }else{
             switch(objCount){
                 case 0:
-                    newy = y;
-                    newx = x-125;
-                    break;
-                case 1:
                     newy = y + boxSize + 50;
                     newx = x;
+                    break;
+                case 1:
+                    newy = y;
+                    newx = x-125;
                     break;
                 case 2:
                     newy = y;
@@ -113,9 +116,9 @@ function render(obj: any, name: string, x: number, y: number){
     }
 
     whites += 'cx.beginPath();cx.fillStyle = \"White\";cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.fill();';
-    if(name === 'Current'){
+    if(name === vname){
         shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 3;cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = "Black";cx.lineWidth = 1;';
-    }else{
+    }else {
         shapes += 'cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();';
     }
     

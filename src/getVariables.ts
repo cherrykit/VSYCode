@@ -91,9 +91,10 @@ export default async function getVariables(varName: string) : Promise<string> {
 		return response1.result;
 	}
 
-	const response2 = await session.customRequest('variables', { variablesReference: response1.variablesReference});
+	//const response2 = await session.customRequest('variables', { variablesReference: response1.variablesReference});
 
-	const variable = await parseVariable(session, "", response2.variables[0]);
+	const variable = await parseVariable(session, '', 
+		{ name: 'var', type: 'Object', value: response1.result, variablesReference: response1.variablesReference});
 
 	return addQuotes(variable);
 }
