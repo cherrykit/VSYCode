@@ -38,7 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
 			if (value === undefined) {
 				throw Error(`KeyError variable ${variable} not present in map`);
 			}
-			view.handleNewVariable(value);
+			view.handleNewVariable(variable, value);
 		});
 	});
 
