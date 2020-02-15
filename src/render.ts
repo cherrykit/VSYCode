@@ -6,6 +6,8 @@ let shapes: string = '';
 let text:string = 'cx.fillStyle=\"Blue\";';
 let warnings:string = '';
 
+const center:number = 200;
+
 export default function getHTML(obj: any){
     var html = '<html><body><canvas width="700" height="700"></canvas><script>let cx = document.querySelector("canvas").getContext("2d");cx.lineWidth=1;';
     render(obj, "Current", 200, 200);
@@ -59,11 +61,13 @@ function render(obj: any, name: string, x: number, y: number){
         var newy;
         if(objectPair[0] === 'left'){
             newy = y + boxSize + 50;
-            newx = 0.5 * x;
+            if(newx == center) newx = 0.5 * x;
+            else newx = (x-center)*0.5+center;
         }
         else if(objectPair[0] === "right"){
             newy = y + boxSize + 50;
-            newx = 1.5 * x;
+            if(newx == center) newx = 1.5 * x;
+            else newx = (x-center)*1.5+center;
         }else if(objectPair[0] === "next"){
             newx = x + 125;
             newy = y;
@@ -117,4 +121,4 @@ fs.writeFile('build.html', getHTML(obj), function (err: any) {
     console.log('Saved!');
   });*/
 
-  JSON.parse('{"value":6,"right":{"value":8,"right":{"value":9,"right":null,"left":null},"left":{"value":7,"right":null,"left":null},"left":{"value":2,"right":{"value":4,"right":null,"left":{"value":3,"right":null,"left":null},"left":{"value":0,"right":null,"left":null}}}');
+  
