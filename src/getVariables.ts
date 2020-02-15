@@ -59,7 +59,7 @@ export class DebugWrapper {
 				this.variableUpdateCallback(this.watchedVars);
 			}
 
-		}, 1000);
+		}, 500);
 	};
 
 	// For auto refreshing variable values
