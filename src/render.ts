@@ -45,11 +45,7 @@ function render(obj: any, name: string, x: number, y: number){
             break;
         }
         if(typeof(obj[key]) === "object"){
-<<<<<<< HEAD
             if(obj[key] != null && obj[key] != undefined) objectFields.push([key, obj[key]]);
-=======
-            if (obj[key] != null && obj[key] != undefined) {objectFields.push([key, obj[key]]);}
->>>>>>> 83ff195b6deba7d0ad4866562c7211ef94ca412b
         }else{
             text += 'cx.fillText(\"' + key + ': ' + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';
             boxSize += 20;
@@ -120,8 +116,5 @@ fs.writeFile('build.html', getHTML(obj), function (err: any) {
     if (err) throw err;
     console.log('Saved!');
   });*/
-<<<<<<< HEAD
 
   JSON.parse('{"value":6,"right":{"value":8,"right":{"value":9,"right":null,"left":null},"left":{"value":7,"right":null,"left":null},"left":{"value":2,"right":{"value":4,"right":null,"left":{"value":3,"right":null,"left":null},"left":{"value":0,"right":null,"left":null}}}');
-=======
->>>>>>> 83ff195b6deba7d0ad4866562c7211ef94ca412b

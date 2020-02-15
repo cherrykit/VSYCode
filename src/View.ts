@@ -14,21 +14,11 @@ export default class View {
 
   handleNewVariable = (variable : any) => {
 
-<<<<<<< HEAD
-    // Draw variable in the webview
-    // console.log(`Drawing variable ${variable}`);
-
-    const panel = vscode.window.createWebviewPanel(
-      'catCoding', // Identifies the type of the webview. Used internally
-      'Visualization', // Title of the panel displayed to the user
-      vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
-=======
     // Open graphical renderer webview beside the current code window
     this.panel = vscode.window.createWebviewPanel(
       'catCoding', 
       'Visualization',
       vscode.ViewColumn.Beside,
->>>>>>> 83ff195b6deba7d0ad4866562c7211ef94ca412b
       {
         enableScripts: true,
       }
