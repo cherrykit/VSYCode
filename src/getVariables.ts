@@ -17,7 +17,7 @@ export default async function getVariables(varName: string) {
 
 	const response1 = await session.customRequest('evaluate', { expression: varName, frameId: frameId });
 
-	if (response1.type != "Object") {
+	if (response1.type !== "Object") {
 		return response1.result;
 	}
 
@@ -30,11 +30,11 @@ export default async function getVariables(varName: string) {
 
 async function parseVariable(session: vscode.DebugSession, string : string, response : any) {
 
-	if (response.name == "__proto__" || response.type != "Object") {
+	if (response.name === "__proto__" || response.type !== "Object") {
 		return string;
 	}
 
-	if (string != "") {
+	if (string !== "") {
 		string = replace(string, response);
 	} else {
 		string = response.value;
