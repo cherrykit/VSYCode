@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import getVariables, { DebugWrapper } from './getVariables';
-import View from './View';
+import ViewPanel from './View';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -12,7 +12,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "ViSCode" is now active!');
 
-	let view = new View();
 	let debugWrapper = new DebugWrapper();
 
 	// The command has been defined in the package.json file
@@ -30,16 +29,16 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const variable = document.getText(wordAtCursorRange);
 
-		debugWrapper.watchVariable(variable);
+		let panel = new ViewPanel(variable);
 
-		// TODO: use map more generally
-		debugWrapper.onVariableUpdate(varMap => {
-			let value = varMap.get(variable);
-			if (value === undefined) {
-				throw Error(`KeyError variable ${variable} not present in map`);
-			}
-			view.handleNewVariable(variable, value);
+		debugWrapper.registerVariable(variable, (name, val) => {
+			panel.render(val);
 		});
+
+		panel.onDidDispose(() => {
+			debugWrapper.unregisterVariable(variable);
+		});
+
 	});
 
 
