@@ -9,14 +9,29 @@ let warnings:string = '';
 const center:number = 200;
 
 export default function getHTML(obj: any){
-    var html = '<html><body><canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");cx.lineWidth=1;cx.fillStyle="White";cx.fillRect(0, 0, canvas.width, canvas.height);cx.fillStyle="Black";';
-    render(obj, "Current", center, 100);
+    lines = '';
+    whites = '';
+    shapes = '';
+    text = 'cx.fillStyle=\"Blue\";';
+    warnings = '';
+    var html = '<html><body>';
+    
+    if(obj.constructor === Object){
+        if(Object.entries(obj).length == 0){
+            warnings += "This object is empty.";
+        }else{
+            render(obj, "Current", center, 100);
+        }
+    }else{
+        warnings += "This is not an object.";
+    }
+    if(warnings.length > 0) html += '<div>' + warnings + '</div>';
+    html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");cx.lineWidth=1;cx.fillStyle="White";cx.fillRect(0, 0, canvas.width, canvas.height);cx.fillStyle="Black";';
     html += lines;
     html += whites;
     html += shapes;
     html += text;
     html += '</script>';
-    if(warnings.length > 0) {html += '<div>' + warnings + '</div>';}
     html += '</body></html>';
 
     return html;
