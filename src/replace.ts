@@ -40,6 +40,9 @@ function findMatching(str: string, index: number){
 }
 
 export function addQuotes(target: string){
+    if (target.length == 0) {
+        return '{}';
+    }
     let spaces:RegExp = / /g;
     let re1:RegExp = /{/g;
     let re2:RegExp = /:/g;
