@@ -13,10 +13,10 @@ export default class View {
     return JSON.parse(variable);
   };
 
-  handleNewVariable = (variable : string) => {
+  handleNewVariable = (varName : string, variable : string) => {
 
     // Open graphical renderer webview beside the current code window
-    let panel = this.getWebViewPanel();
+    let panel = this.getWebViewPanel(varName);
 
     const varToRender = this._formatVariable(variable);
     const html = getHTML(varToRender);
@@ -25,11 +25,11 @@ export default class View {
 
   };
 
-  getWebViewPanel = () : vscode.WebviewPanel => {
+  getWebViewPanel = (variable : string) : vscode.WebviewPanel => {
     if (!this.panel) {
       this.panel = vscode.window.createWebviewPanel(
         'catCoding', 
-        'Visualization',
+        variable + ' - Visualization',
         vscode.ViewColumn.Beside,
         {
           enableScripts: true,
