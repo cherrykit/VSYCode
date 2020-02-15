@@ -14,7 +14,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "ViSCode" is now active!');
 
-
 	let view = new View();
 
 	// The command has been defined in the package.json file
