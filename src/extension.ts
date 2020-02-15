@@ -23,7 +23,16 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.viscode', () => {
 		// The code you place here will be executed every time your command is executed
 
-		getVariables().then(view.handleNewVariable);
+		const { activeTextEditor } = vscode.window;
+		if(!activeTextEditor) return;
+		const { document, selection } = activeTextEditor;
+		const { end } = selection;
+
+		const wordAtCursorRange = document.getWordRangeAtPosition(end);
+
+		const variable = document.getText(wordAtCursorRange);
+
+		getVariables(variable).then(view.handleNewVariable);
 
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello VS World!');
