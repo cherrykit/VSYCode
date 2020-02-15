@@ -7,10 +7,7 @@ export default class View {
   panel?: vscode.WebviewPanel;
   //view?: vscode.Webview;
 
-  constructor() {
-    // this.handleNewVariable.bind(this);
-    // this._formatVariable.bind(this);
-  }
+  constructor() {}
 
   _formatVariable = (variable : any) => {
 
@@ -45,42 +42,7 @@ export default class View {
 
     const varToRender = this._formatVariable(variable);
     const html = getHTML(varToRender);
-    console.log(html);
-    panel.webview.html = getHTML(html);
+    panel.webview.html = html;
 
-
-    // panel.webview.html = getWebviewContent(variable);
-    
-    // getHTML(varToRender);
-    // getWebviewContent(variable);
   };
 }
-
-
-
-
-// function getWebviewContent(variable: any) {
-//   return `<!DOCTYPE html>
-// <html lang="en">
-// <head>
-//     <meta charset="UTF-8">
-//     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-//     <title>Cat Coding</title>
-// </head>
-// <body>
-//     <canvas width='1000' height='1000' style="border: 1px solid #00f;"></canvas>
-//     <p>Check out this variable: </p>
-//     <p>${variable}</>
-
-//     <script>
-//       let canvas = document.querySelector('canvas');
-//       canvas.width = 1000;
-//       canvas.height = 1000;
-//       let cx = canvas.getContext('2d');
-//       cx.fillStyle = '#f00';
-//       cx.fillRect(0,0,100,100);
-//     </script>
-
-// </body>
-// </html>`;
-// }

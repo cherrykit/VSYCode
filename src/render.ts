@@ -1,26 +1,4 @@
-<<<<<<< HEAD:src/render.ts
-/* eslint-disable */
-//var fs = require('fs')
-
-
-let lines = '';
-let whites = '';
-let circles = '';
-let text = 'cx.fillStyle=\"Fuchsia\";';
-let warnings = '';
-
-export default function getHTML(obj : any){
-    var html = '<html><body><canvas width="700" height="700"></canvas><script>let cx = document.querySelector("canvas").getContext("2d");' 
-    render(obj, "Main", 200, 200)
-    html += lines
-    html += whites
-    html += circles
-    html += text
-    html += '</script>'
-    if(warnings.length > 0) html += '<div>' + warnings + '</div>'
-    html += '</body></html>'
-=======
-var fs = require('fs');
+// var fs = require('fs');
 
 let lines: string = '';
 let whites:string  = '';
@@ -28,7 +6,7 @@ let circles: string = '';
 let text:string = 'cx.fillStyle=\"Blue\";';
 let warnings:string = '';
 
-function getHTML(obj: any){
+export default function getHTML(obj: any){
     var html = '<html><body><canvas width="700" height="700"></canvas><script>let cx = document.querySelector("canvas").getContext("2d");cx.lineWidth=1;';
     render(obj, "Current", 200, 200);
     html += lines;
@@ -38,26 +16,10 @@ function getHTML(obj: any){
     html += '</script>';
     if(warnings.length > 0) html += '<div>' + warnings + '</div>';
     html += '</body></html>';
->>>>>>> 9593cf252d046a0f31a79e4912d3cdd38e5345d6:src/render.js
 
     return html;
 }
 
-<<<<<<< HEAD:src/render.ts
-function render(obj:any, name:any, x:any, y:any){
-    text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Comic Sans MS\";'
-    var boxSize = 40
-    const keys = Object.keys(obj)
-    var objectFields = []
-
-    var numlines = 0;
-    for(const key of keys){
-        if(numlines === 10){
-            text += 'cx.fillText(\"...\",' + (x+5) + ',' + (y + boxSize) +');'
-            // text += `cx.fillText(\"...\",${x+5}, ${y+boxSize});`
-            boxSize += 20
-            break
-=======
 function render(obj: any, name: string, x: number, y: number){
     text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Comic Sans MS\";';
     var boxSize = 40;
@@ -69,7 +31,6 @@ function render(obj: any, name: string, x: number, y: number){
             text += 'cx.fillText(\"...\",' + (x+5) + ',' + (y + boxSize) +');';
             boxSize += 20;
             break;
->>>>>>> 9593cf252d046a0f31a79e4912d3cdd38e5345d6:src/render.js
         }
         if(typeof(obj[key]) === "object"){
             objectFields.push([key, obj[key]]);
@@ -142,9 +103,9 @@ let obj:Object = {
     d: {
         text: "ligma"
     }
-}
+};
 
-fs.writeFile('mynewfile3.html', getHTML(obj), function (err: any) {
-    if (err) throw err;
-    console.log('Saved!');
-  });
+// fs.writeFile('mynewfile3.html', getHTML(obj), function (err: any) {
+//     if (err) throw err;
+//     console.log('Saved!');
+//   });
