@@ -3,7 +3,7 @@ var fs = require('fs');
 let lines: string = '';
 let whites:string  = '';
 let shapes: string = '';
-let text:string = 'cx.fillStyle=\"Blue\";';
+let text:string = 'cx.fillStyle=foreground;';
 let warnings:string = '';
 
 const center:number = 200;
@@ -12,7 +12,7 @@ export default function getHTML(obj: any){
     lines = '';
     whites = '';
     shapes = '';
-    text = 'cx.fillStyle=\"Blue\";';
+    text = 'cx.fillStyle=foreground;';
     warnings = '';
     var html = '<html><body>';
     
@@ -25,8 +25,10 @@ export default function getHTML(obj: any){
     }else{
         warnings += "This is not an object.";
     }
-    if(warnings.length > 0) html += '<div>' + warnings + '</div>';
-    html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");cx.lineWidth=1;cx.fillStyle="White";cx.fillRect(0, 0, canvas.width, canvas.height);cx.fillStyle="Black";';
+    if(warnings.length > 0) html += '<div color="Red">' + warnings + '</div>';
+    html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
+    html += 'var background = "Black"; var foreground = "White";';
+    html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
     html += lines;
     html += whites;
     html += shapes;
@@ -38,7 +40,7 @@ export default function getHTML(obj: any){
 }
 
 function renderArray(arr: Array<any>, name: string, x: number, y: number){
-    text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Comic Sans MS\";';
+    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Consolas\";';
     var arrSize = 5;
     for(let elem of arr){
         text += 'cx.fillText(\"' + elem + '\", ' + (x+7) + ', ' + (y + arrSize+13) + ');';
@@ -50,7 +52,7 @@ function renderArray(arr: Array<any>, name: string, x: number, y: number){
  
 function render(obj: any, name: string, x: number, y: number){
     if(Array.isArray(obj)) {return renderArray(obj, name, x, y);}
-    text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Comic Sans MS\";';
+    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Consolas\";';
     var boxSize = 40;
     const keys = Object.keys(obj);
     var objectFields = [];
@@ -112,9 +114,9 @@ function render(obj: any, name: string, x: number, y: number){
         lines += 'cx.beginPath();cx.moveTo('+ (x+boxSize/2) + ', ' + (y+boxSize/2) + ');cx.lineTo(' + coordinates[0] + ', ' + coordinates[1] + ');cx.stroke();';
     }
 
-    whites += 'cx.beginPath();cx.fillStyle = \"White\";cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.fill();';
+    whites += 'cx.beginPath();cx.fillStyle = background;cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.fill();';
     if(name === 'Current'){
-        shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 3;cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = "Black";cx.lineWidth = 1;';
+        shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 3;cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = foreground;cx.lineWidth = 1;';
     }else{
         shapes += 'cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();';
     }
