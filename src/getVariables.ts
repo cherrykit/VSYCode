@@ -36,6 +36,8 @@ async function parseVariable(session: vscode.DebugSession, string : string, resp
 
 	if (string != "") {
 		string = replace(string, response);
+	} else {
+		string = response.value;
 	}
 
 	const response1 = await session.customRequest('variables', { variablesReference: response.variablesReference}); 
