@@ -1,12 +1,14 @@
+/* eslint-disable */
 //var fs = require('fs')
 
-lines = ''
-whites = ''
-circles = ''
-text = 'cx.fillStyle=\"Fuchsia\";'
-warnings = ''
 
-export function getHTML(obj){
+let lines = '';
+let whites = '';
+let circles = '';
+let text = 'cx.fillStyle=\"Fuchsia\";';
+let warnings = '';
+
+export default function getHTML(obj : any){
     var html = '<html><body><canvas width="700" height="700"></canvas><script>let cx = document.querySelector("canvas").getContext("2d");' 
     render(obj, "Main", 200, 200)
     html += lines
@@ -20,7 +22,7 @@ export function getHTML(obj){
     return html
 }
 
-function render(obj, name, x, y){
+function render(obj:any, name:any, x:any, y:any){
     text += 'cx.font = \"16px Comic Sans MS\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Comic Sans MS\";'
     var boxSize = 40
     const keys = Object.keys(obj)
@@ -30,6 +32,7 @@ function render(obj, name, x, y){
     for(const key of keys){
         if(numlines === 10){
             text += 'cx.fillText(\"...\",' + (x+5) + ',' + (y + boxSize) +');'
+            // text += `cx.fillText(\"...\",${x+5}, ${y+boxSize});`
             boxSize += 20
             break
         }
