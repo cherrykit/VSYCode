@@ -34,7 +34,7 @@ export default class View {
     const panel = vscode.window.createWebviewPanel(
       'catCoding', // Identifies the type of the webview. Used internally
       'Visualization', // Title of the panel displayed to the user
-      vscode.ViewColumn.One, // Editor column to show the new webview panel in.
+      vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
       } // Webview options. More on these later.

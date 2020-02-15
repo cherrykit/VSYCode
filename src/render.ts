@@ -45,7 +45,7 @@ function render(obj: any, name: string, x: number, y: number){
             break;
         }
         if(typeof(obj[key]) === "object"){
-            objectFields.push([key, obj[key]]);
+            if(obj[key] != null && obj[key] != undefined) objectFields.push([key, obj[key]]);
         }else{
             text += 'cx.fillText(\"' + key + ': ' + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';
             boxSize += 20;
@@ -101,7 +101,7 @@ function render(obj: any, name: string, x: number, y: number){
     return [(x+boxSize/2), (y+boxSize/2)];
 }
 
-let obj:Object = {
+/*let obj:Object = {
     data: 10,
     a: {
         text: "haha"
@@ -115,4 +115,6 @@ let obj:Object = {
 fs.writeFile('build.html', getHTML(obj), function (err: any) {
     if (err) throw err;
     console.log('Saved!');
-  });
+  });*/
+
+  JSON.parse('{"value":6,"right":{"value":8,"right":{"value":9,"right":null,"left":null},"left":{"value":7,"right":null,"left":null},"left":{"value":2,"right":{"value":4,"right":null,"left":{"value":3,"right":null,"left":null},"left":{"value":0,"right":null,"left":null}}}');
