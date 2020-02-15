@@ -14,7 +14,6 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "ViSCode" is now active!');
 
-
 	let view = new View();
 
 	// The command has been defined in the package.json file
@@ -23,7 +22,16 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.viscode', () => {
 		// The code you place here will be executed every time your command is executed
 
-		getVariables().then(view.handleNewVariable);
+		const { activeTextEditor } = vscode.window;
+		if(!activeTextEditor) return;
+		const { document, selection } = activeTextEditor;
+		const { end } = selection;
+
+		const wordAtCursorRange = document.getWordRangeAtPosition(end);
+
+		const variable = document.getText(wordAtCursorRange);
+
+		getVariables(variable).then(view.handleNewVariable);
 
 		// Display a message box to the user
 		vscode.window.showInformationMessage('Hello VS World!');

@@ -6,7 +6,7 @@ let shapes: string = '';
 let text:string = 'cx.fillStyle=\"Blue\";';
 let warnings:string = '';
 
-function getHTML(obj: any){
+export default function getHTML(obj: any){
     var html = '<html><body><canvas width="700" height="700"></canvas><script>let cx = document.querySelector("canvas").getContext("2d");cx.lineWidth=1;';
     render(obj, "Current", 200, 200);
     html += lines;
