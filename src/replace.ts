@@ -1,4 +1,6 @@
 export function replace(target: string, obj:any){
+    let spaces:RegExp = / /g;
+    target = target.replace(spaces, '');
     target = target.substr(target.indexOf('{'));
 
     let value:string = obj.value;
@@ -6,18 +8,37 @@ export function replace(target: string, obj:any){
 
     let nameArr:Array<string> = obj.evaluateName.split('.');
     let beginStr:string = '';
-    for(let i:number = 2; i < nameArr.length-1; ++i){
-        beginStr += target.substr(0, target.indexOf(nameArr[i])+1);
-        target = target.substr(target.indexOf(nameArr[i])+1);
+    for(let i:number = 2; i < nameArr.length; ++i){
+        let nextField:string = nameArr[i];
+        let index = target.indexOf(nextField) + nextField.length + 1;
+        let leftParen:number = target.indexOf('{',1)+1;
+        if (leftParen == 0 || index < leftParen) {
+            beginStr += target.substr(0, index);
+            target = target.substr(index);
+        } else {
+            let rightParen:number = findMatching(target, leftParen);
+            beginStr += target.substr(0, rightParen + nextField.length +2);
+            target = target.substr(rightParen + nextField.length +2);
+        }
     }
-    let name:string = obj.name;
-    let start:number = target.indexOf(name) + name.length + 1;
-    let end:number = target.indexOf(',', start);
-    let end2:number = target.indexOf('}', start);
+    let end:number = target.indexOf(',');
+    let end2:number = target.indexOf('}');
     if(end == -1 || end2 < end) end = end2;
-    let newstr:string = beginStr + target.substr(0, start) + value + target.substr(end);
+    let newstr:string = beginStr + value + target.substr(end);
     return newstr;
 }
+
+function findMatching(str: string, index: number){
+    let count:number = 1;
+    while(count > 0){
+        if(str[index] == '{') ++count;
+        else if(str[index] == '}') --count;
+        ++index;
+        if (index == str.length) throw "No matching } found.";
+    }
+    return index;
+}
+
 export function addQuotes(target: string){
     let spaces:RegExp = / /g;
     let re1:RegExp = /{/g;

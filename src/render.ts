@@ -6,9 +6,11 @@ let shapes: string = '';
 let text:string = 'cx.fillStyle=\"Blue\";';
 let warnings:string = '';
 
+const center:number = 200;
+
 export default function getHTML(obj: any){
-    var html = '<html><body><canvas width="700" height="700"></canvas><script>let cx = document.querySelector("canvas").getContext("2d");cx.lineWidth=1;';
-    render(obj, "Current", 200, 200);
+    var html = '<html><body><canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");cx.lineWidth=1;cx.fillStyle="White";cx.fillRect(0, 0, canvas.width, canvas.height);cx.fillStyle="Black";';
+    render(obj, "Current", center, 100);
     html += lines;
     html += whites;
     html += shapes;
@@ -45,7 +47,7 @@ function render(obj: any, name: string, x: number, y: number){
             break;
         }
         if(typeof(obj[key]) === "object"){
-            if (obj[key] != null && obj[key] != undefined) {objectFields.push([key, obj[key]]);}
+            if(obj[key] != null && obj[key] != undefined) objectFields.push([key, obj[key]]);
         }else{
             text += 'cx.fillText(\"' + key + ': ' + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';
             boxSize += 20;
@@ -59,11 +61,15 @@ function render(obj: any, name: string, x: number, y: number){
         var newy;
         if(objectPair[0] === 'left'){
             newy = y + boxSize + 50;
-            newx = 0.5 * x;
+            if(x-center > 0) newx = 0.5 * (x-center) +center;
+            else if(x-center < 0) newx = 1.5 * (x-center) +center;
+            else newx = 0.5*center;
         }
         else if(objectPair[0] === "right"){
             newy = y + boxSize + 50;
-            newx = 1.5 * x;
+            if(x-center > 0) newx = 1.5 * (x-center) +center;
+            else if(x-center < 0) newx = 0.5 * (x-center) +center;
+            else newx = 1.5*center;
         }else if(objectPair[0] === "next"){
             newx = x + 125;
             newy = y;
@@ -116,3 +122,5 @@ fs.writeFile('build.html', getHTML(obj), function (err: any) {
     if (err) throw err;
     console.log('Saved!');
   });*/
+
+  
