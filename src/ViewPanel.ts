@@ -1,44 +1,29 @@
 import * as vscode from 'vscode';
 import getHTML from './render';
 
+// Visualizes a single variable.
 export default class ViewPanel {
+
   // The panel created by the view
-  panel?: vscode.WebviewPanel;
-  variableName: string;
+  panel: vscode.WebviewPanel;
 
-  constructor(variableName: string) {
-    this.variableName = variableName;
-
+  constructor(varName: string) {
+    this.panel = vscode.window.createWebviewPanel(
+      'catCoding', 
+      varName + ' - Visualization',
+      vscode.ViewColumn.Beside,
+      {
+        enableScripts: true,
+      }
+    );
   }
 
-  getWebViewPanel = () : vscode.WebviewPanel => {
-    if (!this.panel) {
-      this.panel = vscode.window.createWebviewPanel(
-        'catCoding', 
-        'Visualization',
-        vscode.ViewColumn.Beside,
-        {
-          enableScripts: true,
-        }
-      );
-    }
-    return this.panel;
+  render = (value: string) => {
+    this.panel.webview.html = getHTML(JSON.parse(value));
   };
 
-  reveal = () => {
-    this.getWebViewPanel().reveal(vscode.ViewColumn.Beside);
+  onDidDispose = (callback: () => void) => {
+    this.panel.onDidDispose(callback);
   };
 
-  render = (variableData: string) => {
-    const varToRender = JSON.parse(variableData);
-    const html = getHTML(varToRender);
-
-    let panel = this.getWebViewPanel();
-    
-    panel.webview.html = html;
-
-  };
-
-
-  
 }
