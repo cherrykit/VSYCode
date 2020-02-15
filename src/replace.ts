@@ -10,14 +10,16 @@ export function replace(target: string, obj:any){
     let beginStr:string = '';
     for(let i:number = 2; i < nameArr.length; ++i){
         let nextField:string = nameArr[i];
-        if(nextField == 'right'){
-            let leftParen:number = target.indexOf('{', target.indexOf('left'))+1;
+        let index = target.indexOf(nextField) + nextField.length + 1;
+        let leftParen:number = target.indexOf('{',1)+1;
+        if (leftParen == 0 || index < leftParen) {
+            beginStr += target.substr(0, index);
+            target = target.substr(index);
+        } else {
             let rightParen:number = findMatching(target, leftParen);
-            beginStr += target.substr(0, rightParen+1);
-            target = target.substr(rightParen+1);
+            beginStr += target.substr(0, rightParen + nextField.length +2);
+            target = target.substr(rightParen + nextField.length +2);
         }
-            beginStr += target.substr(0, target.indexOf(nextField)+nextField.length + 1);
-            target = target.substr(target.indexOf(nextField)+nextField.length +1);
     }
     let end:number = target.indexOf(',');
     let end2:number = target.indexOf('}');
