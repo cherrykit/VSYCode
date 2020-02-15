@@ -8,10 +8,13 @@ let warnings:string = '';
 
 const center:number = 200;
 
-export default function getHTML(obj: any){
+let vname = '';
+
+export default function getHTML(varName: string, obj: any){
     lines = '';
     whites = '';
     shapes = '';
+    vname = varName;
     text = 'cx.fillStyle=foreground;';
     warnings = '';
     var html = '<html><body>';
@@ -20,7 +23,7 @@ export default function getHTML(obj: any){
         if(Object.entries(obj).length == 0){
             warnings += "This object is empty.";
         }else{
-            render(obj, "Current", center, 100);
+            render(obj, varName, center, 100);
         }
     }else{
         warnings += "This is not an object.";
@@ -93,12 +96,12 @@ function render(obj: any, name: string, x: number, y: number){
         }else{
             switch(objCount){
                 case 0:
-                    newy = y;
-                    newx = x-125;
-                    break;
-                case 1:
                     newy = y + boxSize + 50;
                     newx = x;
+                    break;
+                case 1:
+                    newy = y;
+                    newx = x-125;
                     break;
                 case 2:
                     newy = y;
@@ -115,7 +118,7 @@ function render(obj: any, name: string, x: number, y: number){
     }
 
     whites += 'cx.beginPath();cx.fillStyle = background;cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.fill();';
-    if(name === 'Current'){
+    if(name === vname){
         shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 3;cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = foreground;cx.lineWidth = 1;';
     }else{
         shapes += 'cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();';

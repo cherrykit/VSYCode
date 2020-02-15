@@ -8,7 +8,7 @@ export function replace(target: string, obj:any){
 
     let nameArr:Array<string> = obj.evaluateName.split('.');
     let beginStr:string = '';
-    for(let i:number = 2; i < nameArr.length; ++i){
+    for(let i:number = 1; i < nameArr.length; ++i){
         let nextField:string = nameArr[i];
         let index = target.indexOf(nextField) + nextField.length + 1;
         let leftParen:number = target.indexOf('{',1)+1;

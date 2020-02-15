@@ -1,12 +1,15 @@
 import * as vscode from 'vscode';
 import { replace, addQuotes } from './replace';
+import { callbackify } from 'util';
+
+type VariableUpdateCallback = (varName: string, varValue: string) => void;
 export class DebugWrapper {
 	session?: vscode.DebugSession;
 
-	watchedVars: Map<string, string>;
+	watchedVars: Map<string, {old: string, callback: VariableUpdateCallback}>;
 	watchIntervalId?: NodeJS.Timeout;
 
-	variableUpdateCallback: Function;
+	variableUpdateCallback: VariableUpdateCallback;
 
 	constructor() {
 		this.session = vscode.debug.activeDebugSession;
@@ -18,45 +21,44 @@ export class DebugWrapper {
 
 	private setUpHandlers = () => {
 		vscode.debug.onDidStartDebugSession(session => { this.session = session; });
-		vscode.debug.onDidTerminateDebugSession(() => { 
-			this.endWatch(); 
-			this.session = undefined; 
+		vscode.debug.onDidTerminateDebugSession(() => {
+			this.endWatch();
+			this.session = undefined;
 		});
 	};
 
-	watchVariable = (varName : string) => {
-		if (this.session === undefined) {
-			throw Error("Tried to watch variable but there is no active debug session");
-		}
-
-		this.watchedVars.set(varName, '');
+	registerVariable = (varName : string, onVariableUpdate : VariableUpdateCallback) => {
+		getVariables(varName).then(newVal => {
+			this.watchedVars.set(varName, {old: newVal, callback: onVariableUpdate});
+			onVariableUpdate(varName, newVal);
+		});
 
 		this.startWatch();
 	};
 
-	onVariableUpdate = (callback : (watchedVars : Map<string, string>) => void) => {
-		this.variableUpdateCallback = callback;
-	};
+	unregisterVariable = (varName: string) => {
+		this.watchedVars.delete(varName);
 
+		if (this.watchedVars.size === 0) {
+			this.endWatch();
+		}
+	};
 
 	// For auto refreshing variable values
 	startWatch = () => {
-		if (this.watchIntervalId) { 
+		if (this.watchIntervalId) {
 			return;
 		}
 		this.watchIntervalId = setInterval(async () => {
-			
-			let newValues = await Promise.all(Array.from(this.watchedVars.keys()).map(async (varName) : Promise<[string, string]>  => {
-				const varData = await getVariables(varName);
-				return [varName, varData];
-			}));
 
-			let oldValues = Array.from(this.watchedVars.entries());
-
-			// JSON.stringify() allows for deep object comparison
-			if (JSON.stringify(newValues) !== JSON.stringify(oldValues)) {
-				this.watchedVars = new Map(newValues);
-				this.variableUpdateCallback(this.watchedVars);
+			// Detect variable changes and call callbacks if value has changed
+			for (let [varName, {old: oldVal, callback}] of this.watchedVars.entries()) {
+				getVariables(varName).then(newVal => {
+					if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+						this.watchedVars.set(varName, {old: newVal, callback});
+						callback(varName, newVal);
+					}
+				});
 			}
 
 		}, 500);
@@ -74,7 +76,7 @@ export class DebugWrapper {
 export default async function getVariables(varName: string) : Promise<string> {
 
 	const session = vscode.debug.activeDebugSession;
-	if (!session) { 
+	if (!session) {
     throw Error('No active debug session');
   }
 	const response = await session.customRequest('stackTrace', { threadId: 1 });
@@ -91,9 +93,10 @@ export default async function getVariables(varName: string) : Promise<string> {
 		return response1.result;
 	}
 
-	const response2 = await session.customRequest('variables', { variablesReference: response1.variablesReference});
+	//const response2 = await session.customRequest('variables', { variablesReference: response1.variablesReference});
 
-	const variable = await parseVariable(session, "", response2.variables[0]);
+	const variable = await parseVariable(session, '', 
+		{ name: 'var', type: 'Object', value: response1.result, variablesReference: response1.variablesReference});
 
 	return addQuotes(variable);
 }
@@ -110,7 +113,7 @@ async function parseVariable(session: vscode.DebugSession, string : string, resp
 		string = response.value.substr(response.value.indexOf('{'));
 	}
 
-	const response1 = await session.customRequest('variables', { variablesReference: response.variablesReference}); 
+	const response1 = await session.customRequest('variables', { variablesReference: response.variablesReference});
 
 	for (let i = 0; i < response1.variables.length; i++) {
 		string = await parseVariable(session, string, response1.variables[i]);

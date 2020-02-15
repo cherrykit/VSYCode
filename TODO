@@ -1,0 +1,13 @@
+Current Bugs / Issues
+- Ensure view is open when visualize is clicked
+
+Stretch goals
+- Fix color schemes
+- Create a logo
+- Create custom rendering functions / refactor rendering logic in general
+- more informative error messages, stuff we can add to the UI
+- Use SVG instead of canvas
+- Multiple variable support
+- Previous and next state frames
+- Resizable views
+- State variable name in top left corner
