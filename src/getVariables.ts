@@ -1,11 +1,81 @@
 import * as vscode from 'vscode';
 import { replace, addQuotes } from './replace';
+export class DebugWrapper {
+	session?: vscode.DebugSession;
 
-export default async function getVariables(varName: string) {
+	watchedVars: Map<string, string>;
+	watchIntervalId?: NodeJS.Timeout;
+
+	variableUpdateCallback: Function;
+
+	constructor() {
+		this.session = vscode.debug.activeDebugSession;
+		this.watchedVars = new Map();
+		this.variableUpdateCallback = () => {};
+
+		this.setUpHandlers();
+	}
+
+	private setUpHandlers = () => {
+		vscode.debug.onDidStartDebugSession(session => { this.session = session; });
+		vscode.debug.onDidTerminateDebugSession(() => { 
+			this.endWatch(); 
+			this.session = undefined; 
+		});
+	};
+
+	watchVariable = (varName : string) => {
+		if (this.session === undefined) {
+			throw Error("Tried to watch variable but there is no active debug session");
+		}
+
+		this.watchedVars.set(varName, '');
+
+		this.startWatch();
+	};
+
+	onVariableUpdate = (callback : (watchedVars : Map<string, string>) => void) => {
+		this.variableUpdateCallback = callback;
+	};
+
+
+	// For auto refreshing variable values
+	startWatch = () => {
+		if (this.watchIntervalId) { 
+			return;
+		}
+		this.watchIntervalId = setInterval(async () => {
+			
+			let newValues = await Promise.all(Array.from(this.watchedVars.keys()).map(async (varName) : Promise<[string, string]>  => {
+				const varData = await getVariables(varName);
+				return [varName, varData];
+			}));
+
+			let oldValues = Array.from(this.watchedVars.entries());
+
+			// JSON.stringify() allows for deep object comparison
+			if (JSON.stringify(newValues) !== JSON.stringify(oldValues)) {
+				this.watchedVars = new Map(newValues);
+				this.variableUpdateCallback(this.watchedVars);
+			}
+
+		}, 1000);
+	};
+
+	// For auto refreshing variable values
+	endWatch = () => {
+		if (this.watchIntervalId !== undefined) {
+			clearInterval(this.watchIntervalId);
+			this.watchIntervalId = undefined;
+		}
+	};
+}
+
+export default async function getVariables(varName: string) : Promise<string> {
 
 	const session = vscode.debug.activeDebugSession;
 	if (!session) { 
-    return;
+    throw Error('No active debug session');
   }
 	const response = await session.customRequest('stackTrace', { threadId: 1 });
 	const frameId = response.stackFrames[0].id;
@@ -37,7 +107,7 @@ async function parseVariable(session: vscode.DebugSession, string : string, resp
 	if (string !== "") {
 		string = replace(string, response);
 	} else {
-		string = response.value;
+		string = response.value.substr(response.value.indexOf('{'));
 	}
 
 	const response1 = await session.customRequest('variables', { variablesReference: response.variablesReference}); 
