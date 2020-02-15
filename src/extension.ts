@@ -1,10 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import getVariables from './getVariables';
+import getVariables, { DebugWrapper } from './getVariables';
 import View from './View';
-
-
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -15,6 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "ViSCode" is now active!');
 
 	let view = new View();
+	let debugWrapper = new DebugWrapper();
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -23,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 		// The code you place here will be executed every time your command is executed
 
 		const { activeTextEditor } = vscode.window;
-		if (!activeTextEditor) return;
+		if (!activeTextEditor) { return; }
 		const { document, selection } = activeTextEditor;
 		const { end } = selection;
 
@@ -31,11 +30,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 		const variable = document.getText(wordAtCursorRange);
 
-		getVariables(variable).then(view.handleNewVariable);
+		debugWrapper.watchVariable(variable);
 
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello VS World!');
+		// TODO: use map more generally
+		debugWrapper.onVariableUpdate(varMap => {
+			let value = varMap.get(variable);
+			if (value === undefined) {
+				throw Error(`KeyError variable ${variable} not present in map`);
+			}
+			view.handleNewVariable(value);
+		});
 	});
+
 
 	context.subscriptions.push(disposable);
 
