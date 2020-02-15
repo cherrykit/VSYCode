@@ -5,29 +5,16 @@ export default class View {
 
   // The panel created by the view
   panel?: vscode.WebviewPanel;
-  //view?: vscode.Webview;
 
   constructor() {}
 
   _formatVariable = (variable : any) => {
-
-    // TODO: Parse python var into js
-    return JSON.parse(variable); /*{
-      data: 10,
-      a: {
-          text: "haha"
-      },
-      b: {
-          text: "nope"
-      },
-      c: {
-          text: "ligma"
-      }
-    }; */
+    return JSON.parse(variable);
   };
 
   handleNewVariable = (variable : any) => {
 
+<<<<<<< HEAD
     // Draw variable in the webview
     // console.log(`Drawing variable ${variable}`);
 
@@ -35,14 +22,21 @@ export default class View {
       'catCoding', // Identifies the type of the webview. Used internally
       'Visualization', // Title of the panel displayed to the user
       vscode.ViewColumn.Two, // Editor column to show the new webview panel in.
+=======
+    // Open graphical renderer webview beside the current code window
+    this.panel = vscode.window.createWebviewPanel(
+      'catCoding', 
+      'Visualization',
+      vscode.ViewColumn.Beside,
+>>>>>>> 83ff195b6deba7d0ad4866562c7211ef94ca412b
       {
         enableScripts: true,
-      } // Webview options. More on these later.
+      }
     );
 
     const varToRender = this._formatVariable(variable);
     const html = getHTML(varToRender);
-    panel.webview.html = html;
+    this.panel.webview.html = html;
 
   };
 }

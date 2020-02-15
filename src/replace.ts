@@ -13,7 +13,8 @@ export function replace(target: string, obj:any){
     let name:string = obj.name;
     let start:number = target.indexOf(name) + name.length + 1;
     let end:number = target.indexOf(',', start);
-    if(end == -1) end = target.indexOf('}', start);
+    let end2:number = target.indexOf('}', start);
+    if(end == -1 || end2 < end) end = end2;
     let newstr:string = beginStr + target.substr(0, start) + value + target.substr(end);
     return newstr;
 }
