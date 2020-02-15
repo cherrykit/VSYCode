@@ -16,18 +16,26 @@ export default class View {
   handleNewVariable = (variable : string) => {
 
     // Open graphical renderer webview beside the current code window
-    this.panel = vscode.window.createWebviewPanel(
-      'catCoding', 
-      'Visualization',
-      vscode.ViewColumn.Beside,
-      {
-        enableScripts: true,
-      }
-    );
+    let panel = this.getWebViewPanel();
 
     const varToRender = this._formatVariable(variable);
     const html = getHTML(varToRender);
-    this.panel.webview.html = html;
+    
+    panel.webview.html = html;
 
+  };
+
+  getWebViewPanel = () : vscode.WebviewPanel => {
+    if (!this.panel) {
+      this.panel = vscode.window.createWebviewPanel(
+        'catCoding', 
+        'Visualization',
+        vscode.ViewColumn.Beside,
+        {
+          enableScripts: true,
+        }
+      );
+    }
+    return this.panel;
   };
 }
