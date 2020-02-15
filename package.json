@@ -19,7 +19,16 @@
 				"command": "extension.viscode",
 				"title": "Visualize"
 			}
-		]
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "inDebugMode",
+					"command": "extension.viscode",
+					"group": "2_workspace"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
