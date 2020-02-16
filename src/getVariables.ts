@@ -91,6 +91,8 @@ export default async function getVariables(varName: string) : Promise<string> {
 
 	if (response1.type !== "Object") {
 		return response1.result;
+	} else if (response1.result.indexOf('Array') === 0) {
+		return await constructArray(session, response1.variablesReference);
 	}
 
 	//const response2 = await session.customRequest('variables', { variablesReference: response1.variablesReference});
@@ -105,6 +107,8 @@ async function parseVariable(session: vscode.DebugSession, string : string, resp
 
 	if (response.name === "__proto__" || response.type !== "Object") {
 		return string;
+	} else if (response.value.indexOf('Array') === 0) {
+		return await constructArray(session, response.variablesReference);
 	}
 
 	if (string !== "") {
@@ -120,5 +124,19 @@ async function parseVariable(session: vscode.DebugSession, string : string, resp
 	}
 
 	return string;
+
+}
+
+async function constructArray(session : vscode.DebugSession, ref : number) {
+
+	let array = '[';
+	const response = await session.customRequest('variables', { variablesReference: ref});
+	for (let i = 1; i < response.variables.length; i++) {
+		if (response.variables[i].name === "__proto__") break;
+		array += addQuotes(await parseVariable(session, response.variables[i].value, response.variables[i]));
+		if (array[array.length - 1] != ',') array += ',';
+	}
+	array = array.replace(/,$/,']');
+	return array;
 
 }
