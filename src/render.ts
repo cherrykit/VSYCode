@@ -30,8 +30,8 @@ export default function getHTML(varName: string, obj: any){
     }
     if(warnings.length > 0) html += '<div color="Red">' + warnings + '</div>';
     html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
-    html += 'var background = "Black"; var foreground = "White";';
-    html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
+    html += 'var background = "#1e1e1e"; var foreground = "White";';
+    html += 'cx.fillStyle=background;cx.translate(0.5,0.5);cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
     html += lines;
     html += whites;
     html += shapes;
@@ -43,7 +43,7 @@ export default function getHTML(varName: string, obj: any){
 }
 
 function renderArray(arr: Array<any>, name: string, x: number, y: number){
-    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Consolas\";';
+    text += 'cx.font = \"16px Monaco\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Monaco\";';
     var arrSize = 5;
     for(let elem of arr){
         text += 'cx.fillText(\"' + elem + '\", ' + (x+7) + ', ' + (y + arrSize+13) + ');';
@@ -55,7 +55,7 @@ function renderArray(arr: Array<any>, name: string, x: number, y: number){
  
 function render(obj: any, name: string, x: number, y: number){
     if(Array.isArray(obj)) {return renderArray(obj, name, x, y);}
-    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Consolas\";';
+    text += 'cx.font = \"16px Monaco\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Monaco\";';
     var boxSize = 40;
     const keys = Object.keys(obj);
     var objectFields = [];
@@ -119,28 +119,12 @@ function render(obj: any, name: string, x: number, y: number){
 
     whites += 'cx.beginPath();cx.fillStyle = background;cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.fill();';
     if(name === vname){
-        shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 3;cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = foreground;cx.lineWidth = 1;';
+        shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 1;cx.beginPath();cx.arc(' + 
+        (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + 
+        ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = foreground;cx.lineWidth = 1;';
     }else{
         shapes += 'cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();';
     }
     
     return [(x+boxSize/2), (y+boxSize/2)];
 }
-
-/*let obj:Object = {
-    data: 10,
-    a: {
-        text: "haha"
-    },
-    b: {
-        text: "nope"
-    },
-    c: [1, 5, 6, 8]
-}
-
-fs.writeFile('build.html', getHTML(obj), function (err: any) {
-    if (err) throw err;
-    console.log('Saved!');
-  });*/
-
-  
