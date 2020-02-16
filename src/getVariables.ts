@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { replace, addQuotes } from './replace';
-import { callbackify } from 'util';
 
 type VariableUpdateCallback = (varName: string, varValue: string) => void;
 export class DebugWrapper {
@@ -11,10 +10,16 @@ export class DebugWrapper {
 
 	variableUpdateCallback: VariableUpdateCallback;
 
+	terminateDebugSessionCallback: Function;
+
+
+
 	constructor() {
 		this.session = vscode.debug.activeDebugSession;
 		this.watchedVars = new Map();
 		this.variableUpdateCallback = () => {};
+		this.terminateDebugSessionCallback = () => {};
+
 
 		this.setUpHandlers();
 	}
@@ -24,7 +29,12 @@ export class DebugWrapper {
 		vscode.debug.onDidTerminateDebugSession(() => {
 			this.endWatch();
 			this.session = undefined;
+			this.terminateDebugSessionCallback();
 		});
+	};
+
+	onDidTerminateDebugSession = (callback: Function) => {
+		this.terminateDebugSessionCallback = callback;
 	};
 
 	registerVariable = (varName : string, onVariableUpdate : VariableUpdateCallback) => {

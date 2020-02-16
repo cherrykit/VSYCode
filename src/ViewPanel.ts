@@ -26,4 +26,8 @@ export default class ViewPanel {
     this.panel.onDidDispose(callback);
   };
 
+  destroy = () => {
+    this.panel.dispose();
+  };
+
 }

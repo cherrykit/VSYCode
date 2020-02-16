@@ -12,7 +12,15 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "ViSCode" is now active!');
 
+
+	let variables = new Set();
+
 	let debugWrapper = new DebugWrapper();
+	debugWrapper.onDidTerminateDebugSession(() => {
+		for (const varName of variables) {
+			
+		}
+	})
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -37,7 +45,10 @@ export function activate(context: vscode.ExtensionContext) {
 
 		panel.onDidDispose(() => {
 			debugWrapper.unregisterVariable(variable);
+			variables.delete(variable);
 		});
+
+		variables.add(variable);
 
 	});
 
