@@ -25,30 +25,68 @@ export default function getHTML(varName: string, obj: any){
         }else{
             render(obj, varName, center, 100);
         }
+        if(warnings.length > 0) html += '<div color="Red">' + warnings + '</div>';
+        html +='<canvas width="700" height="600"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
+        html += 'var background = "Black"; var foreground = "White";';
+        html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
+        html += lines;
+        html += whites;
+        html += shapes;
+        html += text;
+    }else if(obj.constructor === Array){
+        html += '<button onclick="displayArray()">Display as array</button><button onclick="displayTree()">Display as binary tree</button><br>';
+        html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
+        html += 'var background = "Black"; var foreground = "White";';
+        html += 'function displayArray(){'
+        html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
+        renderArray(obj, varName, center, 100);
+        html += lines;
+        lines = '';
+        html += whites;
+        whites = '';
+        html += shapes;
+        shapes = '';
+        html += text;
+        text = 'cx.fillStyle=foreground;';
+        html += '} function displayTree(){';
+        html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
+        renderArrayAsTree(obj, varName, center, 100);
+        html += lines;
+        html += whites;
+        html += shapes;
+        html += text;
+        html += '} displayArray();';
     }else{
         warnings += "This is not an object.";
     }
-    if(warnings.length > 0) html += '<div color="Red">' + warnings + '</div>';
-    html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
-    html += 'var background = "Black"; var foreground = "White";';
-    html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
-    html += lines;
-    html += whites;
-    html += shapes;
-    html += text;
+    
     html += '</script>';
     html += '</body></html>';
 
     return html;
 }
 
+function arrToTree(arr: Array<any>, n: number){
+    if(n >= arr.length) return null;
+    let obj:any = {
+        "": arr[n],
+        "left": arrToTree(arr, 2*n+1),
+        "right": arrToTree(arr, 2*n+2)
+    }
+    return obj;
+}
+
+function renderArrayAsTree(arr: Array<any>, name: string, x: number, y: number){
+    render(arrToTree(arr, 0), name, x, y);
+}
+
 function renderArray(arr: Array<any>, name: string, x: number, y: number){
-    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Consolas\";';
+    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + x + ', ' + y + ');cx.font = \"14px Consolas\";';
     var arrSize = 5;
     for(let elem of arr){
-        text += 'cx.fillText(\"' + elem + '\", ' + (x+7) + ', ' + (y + arrSize+13) + ');';
-        shapes += 'cx.beginPath();cx.strokeRect(' + x + ', '+ (y+arrSize)+ ', 20, 20);cx.stroke();';
-        arrSize += 20;
+        text += 'cx.fillText(\"' + elem + '\", ' + (x+9) + ', ' + (y + arrSize+16) + ');';
+        shapes += 'cx.beginPath();cx.strokeRect(' + x + ', '+ (y+arrSize)+ ', 30, 30);cx.stroke();';
+        arrSize += 30;
     }
     return [x, y];
 }
@@ -69,7 +107,7 @@ function render(obj: any, name: string, x: number, y: number){
         if(typeof(obj[key]) === "object"){
             if(obj[key] != null && obj[key] != undefined) objectFields.push([key, obj[key]]);
         }else{
-            text += 'cx.fillText(\"' + key + ': ' + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';
+            text += 'cx.fillText(\"' + (key == ""?"":key + ': ') + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';
             boxSize += 20;
             numlines++;
         }
@@ -138,9 +176,10 @@ function render(obj: any, name: string, x: number, y: number){
     c: [1, 5, 6, 8]
 }
 
-fs.writeFile('build.html', getHTML(obj), function (err: any) {
+fs.writeFile('build.html', getHTML("arr", [1,5,7,8,2,69,7]), function (err: any) {
     if (err) throw err;
     console.log('Saved!');
-  });*/
+  });
+  */
 
   
