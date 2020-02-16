@@ -27,7 +27,7 @@ export default function getHTML(varName: string, obj: any){
         }
         if(warnings.length > 0) html += '<div color="Red">' + warnings + '</div>';
         html +='<canvas width="700" height="600"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
-        html += 'var background = "Black"; var foreground = "White";';
+        html += 'var background = "#1e1e1e"; var foreground = "White";';
         html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
         html += lines;
         html += whites;
@@ -36,7 +36,7 @@ export default function getHTML(varName: string, obj: any){
     }else if(obj.constructor === Array){
         html += '<button onclick="displayArray()">Display as array</button><button onclick="displayTree()">Display as binary tree</button><br>';
         html +='<canvas width="700" height="700"></canvas><script>let canvas = document.querySelector("canvas");let cx = canvas.getContext("2d");';
-        html += 'var background = "Black"; var foreground = "White";';
+        html += 'var background = "#1e1e1e"; var foreground = "White";';
         html += 'function displayArray(){'
         html += 'cx.lineWidth=2;cx.fillStyle=background;cx.fillRect(0, 0, canvas.width, canvas.height);cx.strokeStyle = foreground;cx.fillStyle=foreground;';
         renderArray(obj, varName, center, 100);
