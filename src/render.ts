@@ -107,6 +107,11 @@ function render(obj: any, name: string, x: number, y: number){
         if(typeof(obj[key]) === "object"){
             if(obj[key] != null && obj[key] != undefined) objectFields.push([key, obj[key]]);
         }else{
+            if (obj[key].length > 6) {
+                obj[key] = obj[key].substr(0,5) + '…';
+            } else if (!isNaN(obj[key])) {
+                obj[key] = +obj[key].toFixed(2);
+            }
             text += 'cx.fillText(\"' + (key == ""?"":key + ': ') + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';
             boxSize += 20;
             numlines++;
