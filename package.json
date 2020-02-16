@@ -1,8 +1,11 @@
 {
 	"name": "viscode",
-	"displayName": "ViSCode",
+	"displayName": "VSYCode (Visually Study Yo Code)",
+	"icon": "img/icon.png",
+	"repository": "https://github.com/cherrykit/ViSCode",
+	"publisher": "VSYCode",
 	"description": "",
-	"version": "0.0.1",
+	"version": "0.1.1",
 	"engines": {
 		"vscode": "^1.42.0"
 	},
