@@ -18,8 +18,8 @@ export default class ViewPanel {
     );
   }
 
-  render = (value: string) => {
-    this.panel.webview.html = getHTML(JSON.parse(value));
+  render = (name: string, value: string) => {
+    this.panel.webview.html = getHTML(name, JSON.parse(value));
   };
 
   onDidDispose = (callback: () => void) => {

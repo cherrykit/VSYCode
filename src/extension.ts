@@ -32,8 +32,12 @@ export function activate(context: vscode.ExtensionContext) {
 		let panel = new ViewPanel(variable);
 
 		debugWrapper.registerVariable(variable, (name, val) => {
+<<<<<<< HEAD
 			console.log('rendering', val);
 			panel.render(val);
+=======
+			panel.render(name, val);
+>>>>>>> 151f4638f68cb40af3cd31b4b621008531f19705
 		});
 
 		panel.onDidDispose(() => {
