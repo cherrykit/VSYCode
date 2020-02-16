@@ -10,7 +10,7 @@ export function replace(target: string, obj:any){
     let beginStr:string = '';
     for(let i:number = 1; i < nameArr.length; ++i){
         let nextField:string = nameArr[i];
-        let index = target.indexOf(nextField) + nextField.length + 1;
+        let index = target.indexOf(nextField + ':') + nextField.length + 1;
         let leftParen:number = target.indexOf('{',1)+1;
         if (index === nextField.length) {
             let insert = target.indexOf('…');
@@ -21,8 +21,9 @@ export function replace(target: string, obj:any){
             target = target.substr(index);
         } else {
             let rightParen:number = findMatching(target, leftParen);
-            beginStr += target.substr(0, rightParen + nextField.length +2);
-            target = target.substr(rightParen + nextField.length +2);
+            beginStr += target.substr(0, rightParen +1);
+            target = target.substr(rightParen +1);
+            --i;
         }
     }
     let end:number = target.indexOf(',');
