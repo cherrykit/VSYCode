@@ -117,13 +117,13 @@ function render(obj: any, name: string, x: number, y: number){
     for(const objectPair of objectFields){
         var newx;
         var newy;
-        if(objectPair[0] === 'left'){
+        if(objectPair[0] === 'left' || objCount === 0){
             newy = y + boxSize + 50;
             if(x-center > 0) newx = 0.5 * (x-center) +center;
             else if(x-center < 0) newx = 1.5 * (x-center) +center;
             else newx = 0.5*center;
         }
-        else if(objectPair[0] === "right"){
+        else if(objectPair[0] === "right" || objCount === 1){
             newy = y + boxSize + 50;
             if(x-center > 0) newx = 1.5 * (x-center) +center;
             else if(x-center < 0) newx = 0.5 * (x-center) +center;
@@ -133,15 +133,15 @@ function render(obj: any, name: string, x: number, y: number){
             newy = y;
         }else{
             switch(objCount){
-                case 0:
+                case 2:
                     newy = y + boxSize + 50;
                     newx = x;
                     break;
-                case 1:
+                case 3:
                     newy = y;
                     newx = x-125;
                     break;
-                case 2:
+                case 4:
                     newy = y;
                     newx = x+125;
                     break;
@@ -149,8 +149,8 @@ function render(obj: any, name: string, x: number, y: number){
                     warnings += "Field " + objectPair[0] + " of Object " + name + " not displayed\n";
                     continue;
             }
-            objCount++;
         }
+        objCount++;
         var coordinates = render(objectPair[1], objectPair[0], newx, newy);
         lines += 'cx.beginPath();cx.moveTo('+ (x+boxSize/2) + ', ' + (y+boxSize/2) + ');cx.lineTo(' + coordinates[0] + ', ' + coordinates[1] + ');cx.stroke();';
     }

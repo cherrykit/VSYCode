@@ -12,7 +12,11 @@ export function replace(target: string, obj:any){
         let nextField:string = nameArr[i];
         let index = target.indexOf(nextField) + nextField.length + 1;
         let leftParen:number = target.indexOf('{',1)+1;
-        if (leftParen == 0 || index < leftParen) {
+        if (index === nextField.length) {
+            let insert = target.indexOf('…');
+            beginStr += target.substr(0, insert) + nextField + ':';
+            target = ',' + target.substr(insert);
+        } else if (leftParen === 0 || index < leftParen) {
             beginStr += target.substr(0, index);
             target = target.substr(index);
         } else {
@@ -47,7 +51,11 @@ export function addQuotes(target: string){
     let re1:RegExp = /{/g;
     let re2:RegExp = /:/g;
     let re3:RegExp = /,/g;
-    return target.replace(spaces, '').replace(re1, '{"').replace(re2, '":').replace(re3, ',"');
+    let re4:RegExp = /,…/g;
+    target = target.replace(spaces, '');
+    target = target.replace(re4,'');
+    target = target.replace(re1, '{"').replace(re2, '":').replace(re3, ',"');
+    return target;
 }
 
 /* let a:string = 'BinaryTree { root:Node }';
