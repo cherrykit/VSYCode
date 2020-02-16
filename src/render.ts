@@ -67,7 +67,7 @@ export default function getHTML(varName: string, obj: any){
 }
 
 function arrToTree(arr: Array<any>, n: number){
-    if(n >= arr.length) return null;
+    if(n >= arr.length || arr[n] == null) return null;
     let obj:any = {
         "": arr[n],
         "left": arrToTree(arr, 2*n+1),
@@ -81,11 +81,17 @@ function renderArrayAsTree(arr: Array<any>, name: string, x: number, y: number){
 }
 
 function renderArray(arr: Array<any>, name: string, x: number, y: number){
-    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + x + ', ' + y + ');cx.font = \"14px Consolas\";';
+    text += 'cx.font = \"16px Monaco\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Monaco\";';
     var arrSize = 5;
+    var maxLength = 0;
     for(let elem of arr){
-        text += 'cx.fillText(\"' + elem + '\", ' + (x+9) + ', ' + (y + arrSize+16) + ');';
-        shapes += 'cx.beginPath();cx.strokeRect(' + x + ', '+ (y+arrSize)+ ', 30, 30);cx.stroke();';
+        if(elem == null) maxLength = Math.max(maxLength, 4);
+        else maxLength = maxLength>elem.toString().length?maxLength:elem.toString().length;
+    }
+    
+    for(let elem of arr){
+        text += 'cx.fillText(\"' + elem+ '\", ' + (x+5) + ', ' + (y + arrSize+16) + ');';
+        shapes += 'cx.beginPath();cx.strokeRect(' + x + ', '+ (y+arrSize)+ ', ' + (10*maxLength+10) + ', 30);cx.stroke();';
         arrSize += 30;
     }
     return [x, y];
@@ -93,7 +99,7 @@ function renderArray(arr: Array<any>, name: string, x: number, y: number){
  
 function render(obj: any, name: string, x: number, y: number){
     if(Array.isArray(obj)) {return renderArray(obj, name, x, y);}
-    text += 'cx.font = \"16px Consolas\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Consolas\";';
+    text += 'cx.font = \"16px Monaco\";cx.fillText(\"' + name + '\", ' + (x+5) + ', ' + (y+20) + ');cx.font = \"12px Monaco\";';
     var boxSize = 40;
     const keys = Object.keys(obj);
     var objectFields = [];
@@ -165,7 +171,9 @@ function render(obj: any, name: string, x: number, y: number){
 
     whites += 'cx.beginPath();cx.fillStyle = background;cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.fill();';
     if(name === vname){
-        shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 3;cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = foreground;cx.lineWidth = 1;';
+        shapes += 'cx.strokeStyle = "Red";cx.lineWidth = 1;cx.beginPath();cx.arc(' + 
+        (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + 
+        ', 0, 2 * Math.PI);cx.stroke();cx.strokeStyle = foreground;cx.lineWidth = 1;';
     }else{
         shapes += 'cx.beginPath();cx.arc(' + (x+boxSize/2) + ',' + (y+boxSize/2) + ',' + (boxSize *0.75) + ', 0, 2 * Math.PI);cx.stroke();';
     }
@@ -173,21 +181,10 @@ function render(obj: any, name: string, x: number, y: number){
     return [(x+boxSize/2), (y+boxSize/2)];
 }
 
-/*let obj:Object = {
-    data: 10,
-    a: {
-        text: "haha"
-    },
-    b: {
-        text: "nope"
-    },
-    c: [1, 5, 6, 8]
-}
-
-fs.writeFile('build.html', getHTML("arr", [1,5,7,8,2,69,7]), function (err: any) {
+fs.writeFile('build.html', getHTML("arr", [1,5,7,8,null,null,7]), function (err: any) {
     if (err) throw err;
     console.log('Saved!');
   });
-  */
+  
 
   
