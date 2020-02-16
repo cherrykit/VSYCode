@@ -117,7 +117,10 @@ function render(obj: any, name: string, x: number, y: number){
     for(const objectPair of objectFields){
         var newx;
         var newy;
-        if(objectPair[0] === 'left' || objCount === 0){
+        if (objectFields.length === 1) {
+            newy = y + boxSize + 50;
+            newx = x;
+        } else if(objectPair[0] === 'left' || (objCount === 0 && objectPair[0] !== 'right')){
             newy = y + boxSize + 50;
             if(x-center > 0) newx = 0.5 * (x-center) +center;
             else if(x-center < 0) newx = 1.5 * (x-center) +center;
