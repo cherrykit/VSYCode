@@ -115,7 +115,7 @@ function render(obj: any, name: string, x: number, y: number){
         }else{
             if (obj[key].length > 6) {
                 obj[key] = obj[key].substr(0,5) + '…';
-            } else if (!isNaN(obj[key])) {
+            } else if (!isNaN(obj[key]) && obj[key].toFixed(2)) {
                 obj[key] = +obj[key].toFixed(2);
             }
             text += 'cx.fillText(\"' + (key == ""?"":key + ': ') + obj[key] + '\",' + (x+5) + ',' + (y + boxSize) +');';

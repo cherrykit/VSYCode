@@ -55,6 +55,9 @@ export function addQuotes(target: string){
     let re4:RegExp = /,…/g;
     target = target.replace(spaces, '');
     target = target.replace(re4,'');
+    if (target.indexOf('[') === 0) {
+        return target;
+    }
     target = target.replace(re1, '{"').replace(re2, '":').replace(re3, ',"');
     return target;
 }
