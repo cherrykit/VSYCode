@@ -67,7 +67,7 @@ export default function getHTML(varName: string, obj: any){
 }
 
 function arrToTree(arr: Array<any>, n: number){
-    if(n >= arr.length) return null;
+    if(n >= arr.length || arr[n] == null) return null;
     let obj:any = {
         "": arr[n],
         "left": arrToTree(arr, 2*n+1),
@@ -83,9 +83,15 @@ function renderArrayAsTree(arr: Array<any>, name: string, x: number, y: number){
 function renderArray(arr: Array<any>, name: string, x: number, y: number){
     text += 'cx.font = \"16px Monaco\";cx.fillText(\"' + name + '\", ' + (x+7) + ', ' + y + ');cx.font = \"12px Monaco\";';
     var arrSize = 5;
+    var maxLength = 0;
     for(let elem of arr){
-        text += 'cx.fillText(\"' + elem + '\", ' + (x+9) + ', ' + (y + arrSize+16) + ');';
-        shapes += 'cx.beginPath();cx.strokeRect(' + x + ', '+ (y+arrSize)+ ', 30, 30);cx.stroke();';
+        if(elem == null) maxLength = Math.max(maxLength, 4);
+        else maxLength = maxLength>elem.toString().length?maxLength:elem.toString().length;
+    }
+    
+    for(let elem of arr){
+        text += 'cx.fillText(\"' + elem+ '\", ' + (x+5) + ', ' + (y + arrSize+16) + ');';
+        shapes += 'cx.beginPath();cx.strokeRect(' + x + ', '+ (y+arrSize)+ ', ' + (10*maxLength+10) + ', 30);cx.stroke();';
         arrSize += 30;
     }
     return [x, y];
@@ -169,3 +175,11 @@ function render(obj: any, name: string, x: number, y: number){
     
     return [(x+boxSize/2), (y+boxSize/2)];
 }
+
+fs.writeFile('build.html', getHTML("arr", [1,5,7,8,null,null,7]), function (err: any) {
+    if (err) throw err;
+    console.log('Saved!');
+  });
+  
+
+  
